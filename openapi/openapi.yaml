@@ -1,0 +1,50 @@
+swagger: '2.0'
+info:
+  title: Download Test
+  description: download
+  version: "1.0.0"
+
+host: localhost:3000
+
+schemes:
+  - http
+
+basePath: /
+
+produces: 
+  - application/json
+
+paths:
+  /file:
+    get:
+      produces:
+        - application/octet-stream
+
+      parameters:
+        - in: query
+          name: size
+          default: 10485760
+          type: number
+          format: int
+
+      responses:
+        200:
+          description: download a file
+          schema:
+            type: string
+            format: binary
+
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
