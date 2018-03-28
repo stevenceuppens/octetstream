@@ -13,6 +13,9 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/stevenceuppens/octetstream/openapi/gen/restapi"
 	"github.com/stevenceuppens/octetstream/openapi/gen/restapi/operations"
+
+	"net/http"
+	_ "net/http/pprof"
 )
 
 // Default ENV
@@ -32,6 +35,8 @@ func init() {
 }
 
 func main() {
+	go startProfiling()
+
 	// load embedded swagger file
 	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
 	if err != nil {
@@ -67,4 +72,8 @@ func download(params operations.GetFileParams) middleware.Responder {
 	data := ioutil.NopCloser(bytes.NewBuffer(buffer))
 
 	return operations.NewGetFileOK().WithPayload(data)
+}
+
+func startProfiling() {
+	http.ListenAndServe(":8080", http.DefaultServeMux)
 }
